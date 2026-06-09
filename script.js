@@ -171,21 +171,29 @@ document.addEventListener("DOMContentLoaded", () => {
   openBtn.addEventListener("click", () => {
     // Adiciona classe de abertura para rodar as transições CSS do envelope
     envelopeOverlay.classList.add("open");
-    
-    // Tenta iniciar a música de fundo imediatamente
-    playBackgroundMusic();
+
+    // Inicia a música AGORA — dentro do gesto do usuário, browsers permitem autoplay
+    bgMusic.play().then(() => {
+      musicToggleBtn.classList.remove("paused");
+    }).catch(() => {
+      musicToggleBtn.classList.add("paused");
+    });
 
     // Aguarda a animação do envelope e então faz o fadeout da overlay
     setTimeout(() => {
       envelopeOverlay.classList.add("fade-out");
       mainContent.classList.remove("hidden");
-      
+
       // Inicia os contadores de tempo real
       startTimers();
-      
+
+      // Inicializa o carrossel APÓS o conteúdo estar visível (necessário para obter offsetWidth correto)
+      createCarouselIndicators();
+      startAutoSlide();
+
       // Aciona o observer de fade-in no scroll
       initScrollObserver();
-      
+
       // Remove o envelope do DOM após sumir para liberar memória
       setTimeout(() => {
         envelopeOverlay.style.display = "none";
@@ -415,8 +423,8 @@ document.addEventListener("DOMContentLoaded", () => {
     startAutoSlide();
   }
 
-  createCarouselIndicators();
-  startAutoSlide();
+  // createCarouselIndicators() e startAutoSlide() são chamados dentro do handler
+  // do botão 'Abrir com Amor', após o main-content ficar visível.
 
   /* ==========================================================================
      6. SISTEMA LIGHTBOX (Zoom de Fotos)
