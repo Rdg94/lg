@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Feliz Dia dos Namorados, Gabrielly! ❤️</title>
+  
+  <!-- Google Fonts para tipografia romântica e moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Canvas para corações flutuantes e toques na tela -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Elemento de Áudio para Música de Fundo -->
+  <audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ================= TELA DO ENVELOPE (Abertura) ================= -->
+  <div class="envelope-overlay" id="envelope-overlay">
+    <div class="envelope-wrapper">
+      <div class="envelope" id="envelope">
+        <div class="flap"></div>
+        <div class="pocket"></div>
+        <div class="letter-preview">
+          <p>Para minha preta...</p>
+          <span class="heart-seal">❤️</span>
+        </div>
+      </div>
+      <button class="open-btn" id="open-btn">
+        <span class="btn-text">Abrir com Amor</span>
+        <svg class="btn-heart-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= CONTEÚDO PRINCIPAL (Revelado após abrir) ================= -->
+  <div class="main-content hidden" id="main-content">
+    
+    <!-- Botão Flutuante de Música -->
+    <button class="music-toggle-btn" id="music-toggle-btn" aria-label="Controlar Música">
+      <svg class="music-icon icon-playing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18V5l12-2v13"></path>
+        <circle cx="6" cy="18" r="3"></circle>
+        <circle cx="18" cy="16" r="3"></circle>
+      </svg>
+      <div class="music-pulse"></div>
+    </button>
+
+    <!-- Cabeçalho Principal -->
+    <header class="romantic-header">
+      <div class="sparkle-title">Para minha preta, meu amor, minha vida. ❤️</div>
+      <p class="subtitle">Uma história de amor escrita por Deus</p>
+    </header>
+
+    <!-- Seção do Contador Dinâmico -->
+    <section class="counter-section fade-in-section">
+      <div class="glass-card">
+        <h2 class="card-title font-romantic">Nossos Momentos</h2>
+        <p class="counter-intro">Cada segundo ao seu lado é uma dádiva. Veja quanto tempo já compartilhamos juntos:</p>
+        
+        <!-- Contador de Namoro -->
+        <div class="counter-box">
+          <span class="counter-label">Nosso Namoro (desde 26/05/2017)</span>
+          <div class="timer" id="namoro-timer">
+            <div class="time-block"><span class="number" id="n-years">00</span><span class="time-label">anos</span></div>
+            <div class="time-block"><span class="number" id="n-months">00</span><span class="time-label">meses</span></div>
+            <div class="time-block"><span class="number" id="n-days">00</span><span class="time-label">dias</span></div>
+            <div class="time-block"><span class="number" id="n-hours">00</span><span class="time-label">h</span></div>
+            <div class="time-block"><span class="number" id="n-minutes">00</span><span class="time-label">m</span></div>
+            <div class="time-block"><span class="number" id="n-seconds">00</span><span class="time-label">s</span></div>
+          </div>
+        </div>
+
+        <div class="divider">✦ 🌺 ✦</div>
+
+        <!-- Contador de Casamento -->
+        <div class="counter-box">
+          <span class="counter-label">Nosso Casamento (desde 13/07/2019)</span>
+          <div class="timer" id="casamento-timer">
+            <div class="time-block"><span class="number" id="c-years">00</span><span class="time-label">anos</span></div>
+            <div class="time-block"><span class="number" id="c-months">00</span><span class="time-label">meses</span></div>
+            <div class="time-block"><span class="number" id="c-days">00</span><span class="time-label">dias</span></div>
+            <div class="time-block"><span class="number" id="c-hours">00</span><span class="time-label">h</span></div>
+            <div class="time-block"><span class="number" id="c-minutes">00</span><span class="time-label">m</span></div>
+            <div class="time-block"><span class="number" id="c-seconds">00</span><span class="time-label">s</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção da Declaração + Polaroids Integradas -->
+    <section class="declaration-story">
+      
+      <!-- Bloco 1 -->
+      <div class="story-block fade-in-section">
+        <div class="glass-card text-card">
+          <p class="story-text">
+            Dia dos Namorados sempre me faz lembrar do quanto nossa história é especial.
+          </p>
+        </div>
+        <div class="polaroid-wrapper single-polaroid">
+          <div class="polaroid" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.27.jpeg')">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.27.jpeg" alt="Nossa história">
+            <div class="polaroid-caption">Onde tudo começou...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco 2 -->
+      <div class="story-block reverse-block fade-in-section">
+        <div class="glass-card text-card">
+          <p class="story-text">
+            Parece que foi ontem que começamos nosso namoro (26 de maio de 2017). Depois vieram os planos, o noivado, o casamento (13 de julho de 2019), e hoje estamos aqui, vivendo uma linda história juntos.
+          </p>
+        </div>
+        <div class="polaroid-wrapper single-polaroid">
+          <div class="polaroid" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.28.jpeg')">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.28.jpeg" alt="O nosso sim">
+            <div class="polaroid-caption">Nosso dia especial 💍</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco 3 -->
+      <div class="story-block fade-in-section">
+        <div class="glass-card text-card">
+          <p class="story-text">
+            Amor, uma das coisas que mais admiro em você é a forma como você cuida de tudo e de todos. Você está sempre atenta aos detalhes, sempre pensando à frente, sempre encontrando um jeito de fazer nossa família funcionar da melhor forma. Você é uma esposa incrível, uma mãe dedicada e uma mulher maravilhosa.
+          </p>
+        </div>
+        <div class="polaroid-wrapper single-polaroid">
+          <div class="polaroid" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.30.jpeg')">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.30.jpeg" alt="Você é incrível">
+            <div class="polaroid-caption">Minha esposa, meu orgulho</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco 4 -->
+      <div class="story-block reverse-block fade-in-section">
+        <div class="glass-card text-card">
+          <p class="story-text">
+            Obrigado por caminhar comigo todos esses anos. Obrigado pelas conversas, pelas risadas, pelo companheirismo e por estar ao meu lado em cada fase da nossa vida.
+          </p>
+        </div>
+        <div class="polaroid-wrapper single-polaroid">
+          <div class="polaroid" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.31.jpeg')">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31.jpeg" alt="Companheirismo">
+            <div class="polaroid-caption">Lado a lado, sempre</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco 5 -->
+      <div class="story-block fade-in-section">
+        <div class="glass-card text-card">
+          <p class="story-text">
+            É lindo perceber que, depois de todo esse tempo, eu continuo feliz por ter escolhido você. E escolheria de novo, sem pensar duas vezes.
+          </p>
+        </div>
+        <div class="polaroid-wrapper single-polaroid">
+          <div class="polaroid" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.32.jpeg')">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32.jpeg" alt="Eu escolheria você de novo">
+            <div class="polaroid-caption">Minha escolha de todos os dias</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= MURAL POLAROID INTERATIVO ================= -->
+    <section class="mural-section fade-in-section">
+      <h2 class="section-title font-romantic">Mural de Lembranças</h2>
+      <p class="section-desc">Toque em qualquer foto para ver a nossa lembrança em tamanho maior.</p>
+      
+      <div class="mural-grid">
+        <div class="mural-item p-tilt-left" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.27 (1).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.27 (1).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-right" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.30 (1).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.30 (1).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-left" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.30 (2).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.30 (2).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-right" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.31 (1).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31 (1).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-left" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.31 (2).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31 (2).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-right" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.31 (3).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31 (3).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-left" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.32 (1).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32 (1).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-right" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.32 (2).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32 (2).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+        <div class="mural-item p-tilt-left" onclick="openLightbox('images/WhatsApp Image 2026-06-08 at 11.52.32 (3).jpeg')">
+          <div class="mural-polaroid">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32 (3).jpeg" alt="Foto do casal" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CARROSSEL SEQUENCIAL INTERATIVO ================= -->
+    <section class="carousel-section fade-in-section">
+      <h2 class="section-title font-romantic">Nossa Galeria</h2>
+      <p class="section-desc">Deslize para o lado para rever os nossos momentos marcantes.</p>
+      
+      <div class="carousel-container">
+        <div class="carousel-viewport" id="carousel-viewport">
+          <!-- Slide 1 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.27.jpeg" alt="Slide 1">
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.27 (1).jpeg" alt="Slide 2">
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.28.jpeg" alt="Slide 3">
+          </div>
+          <!-- Slide 4 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.30.jpeg" alt="Slide 4">
+          </div>
+          <!-- Slide 5 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.30 (1).jpeg" alt="Slide 5">
+          </div>
+          <!-- Slide 6 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.30 (2).jpeg" alt="Slide 6">
+          </div>
+          <!-- Slide 7 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31.jpeg" alt="Slide 7">
+          </div>
+          <!-- Slide 8 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31 (1).jpeg" alt="Slide 8">
+          </div>
+          <!-- Slide 9 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31 (2).jpeg" alt="Slide 9">
+          </div>
+          <!-- Slide 10 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.31 (3).jpeg" alt="Slide 10">
+          </div>
+          <!-- Slide 11 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32.jpeg" alt="Slide 11">
+          </div>
+          <!-- Slide 12 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32 (1).jpeg" alt="Slide 12">
+          </div>
+          <!-- Slide 13 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32 (2).jpeg" alt="Slide 13">
+          </div>
+          <!-- Slide 14 -->
+          <div class="carousel-slide">
+            <img src="images/WhatsApp Image 2026-06-08 at 11.52.32 (3).jpeg" alt="Slide 14">
+          </div>
+        </div>
+
+        <!-- Botões de Navegação -->
+        <button class="carousel-control prev" id="carousel-prev" aria-label="Foto Anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <button class="carousel-control next" id="carousel-next" aria-label="Próxima Foto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Indicadores de Slide (Bolinhas) -->
+        <div class="carousel-indicators" id="carousel-indicators"></div>
+      </div>
+    </section>
+
+    <!-- Seção de Fechamento -->
+    <footer class="romantic-footer fade-in-section">
+      <div class="footer-card glass-card">
+        <p class="footer-msg">Que venham muitos outros capítulos dessa história que Deus escreveu para nós.</p>
+        <p class="final-love font-romantic">Te amo, preta.</p>
+        <div class="animated-heart">❤️</div>
+        <p class="happy-vday">Feliz Dia dos Namorados!</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ================= LIGHTBOX (Modal para Zoom de Fotos) ================= -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" aria-label="Fechar">&times;</button>
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="Imagem Ampliada">
+    </div>
+  </div>
+
+  <!-- Carrega a lógica JS -->
+  <script src="script.js"></script>
+</body>
+</html>

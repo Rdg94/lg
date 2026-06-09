@@ -1,0 +1,851 @@
+/* ==========================================================================
+   SISTEMA DE DESIGN & VARIÁVEIS (Burgundy & Gold Theme)
+   ========================================================================== */
+:root {
+  --bg-primary: #12030f;
+  --bg-gradient: linear-gradient(135deg, #180415 0%, #2e0821 50%, #150212 100%);
+  --gold-primary: #d4af37;
+  --gold-light: #f3e5ab;
+  --rose-gold: #b76e79;
+  --rose-gold-gradient: linear-gradient(135deg, #e0b0ff 0%, #b76e79 50%, #8d4b53 100%);
+  --gold-gradient: linear-gradient(135deg, #ffe599 0%, #d4af37 50%, #aa7c11 100%);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #f0e6ef;
+  --text-muted: #c3a6be;
+  
+  --card-bg: rgba(43, 11, 32, 0.45);
+  --card-border: rgba(183, 110, 121, 0.25);
+  --card-glow: rgba(183, 110, 121, 0.15);
+  
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-romantic: 'Dancing Script', cursive;
+  --font-signature: 'Great Vibes', cursive;
+  
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: all 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+}
+
+/* ==========================================================================
+   CONFIGURAÇÕES GERAIS E RESET
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent; /* Remove highlight azul no mobile */
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  background-image: var(--bg-gradient);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Canvas de Fundo (Partículas) */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none; /* Deixa cliques passarem para os botões */
+}
+
+/* Utilitários de Ocultação */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   ANIMAÇÕES E EFEITOS
+   ========================================================================== */
+@keyframes pulse-gold {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--card-glow), 0 0 2px var(--rose-gold);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(183, 110, 121, 0.45), 0 0 8px var(--rose-gold);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  40% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Texto Gradiente Ouro Rosé */
+.gold-text {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+/* Efeito Vidro (Glassmorphism) */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(255, 255, 255, 0.05);
+  padding: 24px;
+  position: relative;
+  z-index: 2;
+  animation: pulse-gold 4s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   TELA DO ENVELOPE (Abertura Interativa)
+   ========================================================================== */
+.envelope-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #2e0821 0%, #12030f 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s;
+}
+
+.envelope-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.envelope-wrapper {
+  perspective: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 90%;
+  max-width: 380px;
+}
+
+.envelope {
+  position: relative;
+  width: 280px;
+  height: 180px;
+  background: #6a1b29; /* Vinho envelope */
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+/* Aba superior */
+.envelope .flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 140px solid transparent;
+  border-right: 140px solid transparent;
+  border-top: 100px solid #802135; /* Cor ligeiramente diferente */
+  transform-origin: top;
+  z-index: 3;
+  transition: transform 0.6s ease;
+}
+
+/* Parte interna e laterais */
+.envelope .pocket {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #5c1724;
+  border-radius: 0 0 10px 10px;
+  z-index: 2;
+  /* Cria os cortes diagonais internos do envelope */
+  clip-path: polygon(0 0, 140px 105px, 280px 0, 280px 180px, 0 180px);
+}
+
+/* Carta saindo de dentro */
+.envelope .letter-preview {
+  position: absolute;
+  left: 15px;
+  bottom: 15px;
+  width: 250px;
+  height: 140px;
+  background: #fffafa;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  z-index: 1;
+  transform: translateY(0);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+}
+
+.envelope .letter-preview p {
+  font-family: var(--font-romantic);
+  font-size: 1.6rem;
+  color: #5c1724;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.envelope .letter-preview .heart-seal {
+  font-size: 2rem;
+  animation: heartbeat 2s infinite ease;
+}
+
+/* Estados da Animação do Envelope */
+.envelope-overlay.open .envelope .flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.envelope-overlay.open .envelope .letter-preview {
+  transform: translateY(-90px) scale(1.05);
+  z-index: 4;
+}
+
+/* Botão de abrir */
+.open-btn {
+  background: var(--gold-gradient);
+  border: none;
+  padding: 15px 35px;
+  border-radius: 30px;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #12030f;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition-spring);
+}
+
+.open-btn:active {
+  transform: scale(0.95);
+}
+
+.btn-heart-icon {
+  width: 18px;
+  height: 18px;
+  color: #b7094c;
+  animation: heartbeat 1.5s infinite;
+}
+
+/* ==========================================================================
+   CONTEÚDO PRINCIPAL (Main Content)
+   ========================================================================== */
+.main-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 480px; /* Garante que fique lindo no tamanho mobile */
+  margin: 0 auto;
+  padding: 24px 16px 60px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  box-sizing: border-box;
+}
+
+/* Botão de Música Flutuante */
+.music-toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 1px solid var(--rose-gold);
+  color: var(--gold-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 99;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.music-toggle-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.music-toggle-btn.paused .icon-playing {
+  display: none;
+}
+
+/* Ícone de música quando pausado */
+.music-toggle-btn.paused::after {
+  content: "/";
+  position: absolute;
+  font-size: 1.5rem;
+  color: #b76e79;
+  font-weight: bold;
+  transform: rotate(15deg);
+}
+
+.music-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid var(--rose-gold);
+  animation: heartbeat 2s infinite ease-out;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.music-toggle-btn.paused .music-pulse {
+  animation: none;
+  display: none;
+}
+
+/* Cabeçalho */
+.romantic-header {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  animation: float 6s infinite ease-in-out;
+}
+
+.sparkle-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(183, 110, 121, 0.6), 0 0 20px rgba(183, 110, 121, 0.3);
+}
+
+.romantic-header .subtitle {
+  font-family: var(--font-romantic);
+  font-size: 1.4rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   CONTADORES (TIMER)
+   ========================================================================== */
+.counter-section {
+  width: 100%;
+}
+
+.font-romantic {
+  font-family: var(--font-romantic) !important;
+  font-size: 2.2rem !important;
+  text-align: center;
+  margin-bottom: 12px;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.counter-intro {
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.counter-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.counter-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.timer {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.time-block {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0; /* Evita quebras no grid do mobile */
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.time-block .number {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.time-block .time-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: lowercase;
+  margin-top: 2px;
+}
+
+.divider {
+  text-align: center;
+  color: var(--rose-gold);
+  font-size: 1.1rem;
+  margin: 20px 0;
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   DECLARAÇÃO E STORY BLOCKS
+   ========================================================================== */
+.declaration-story {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100%;
+}
+
+.story-block {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.story-block.reverse-block {
+  /* No mobile, manter estrutura vertical idêntica */
+}
+
+.text-card {
+  padding: 20px;
+  line-height: 1.7;
+}
+
+.story-text {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  text-align: justify;
+}
+
+/* Estilo da Foto Polaroid */
+.polaroid-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.polaroid {
+  background: #ffffff;
+  padding: 12px 12px 28px 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 2px 4px rgba(255,255,255,0.05);
+  border-radius: 2px;
+  transform: rotate(-2deg);
+  transition: var(--transition-smooth);
+  width: 85%;
+  max-width: 270px;
+}
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 1px;
+}
+
+.polaroid-caption {
+  font-family: var(--font-romantic);
+  color: #2b0b20;
+  font-size: 1.4rem;
+  text-align: center;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+.story-block:nth-child(even) .polaroid {
+  transform: rotate(2deg);
+}
+
+.polaroid:active {
+  transform: scale(1.05) rotate(0deg);
+}
+
+/* ==========================================================================
+   MURAL DE FOTOS (FOTOS ESPALHADAS / POLAROID MURAL)
+   ========================================================================== */
+.mural-section {
+  width: 100%;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.section-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.mural-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  padding: 0 4px;
+}
+
+/* O terceiro item ficará no meio se for ímpar, ou ocupará 2 colunas */
+.mural-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* A última imagem (9ª) pode se estender por duas colunas */
+.mural-item:nth-child(9) {
+  grid-column: span 2;
+}
+
+.mural-polaroid {
+  background: #ffffff;
+  padding: 8px 8px 18px 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  border-radius: 2px;
+  width: 100%;
+  max-width: 160px;
+  transition: var(--transition-smooth);
+}
+
+.mural-polaroid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+/* Inclinações alternadas para realismo físico */
+.p-tilt-left .mural-polaroid {
+  transform: rotate(-3deg);
+}
+
+.p-tilt-right .mural-polaroid {
+  transform: rotate(4deg);
+}
+
+.mural-polaroid:active {
+  transform: scale(1.08) rotate(0deg);
+  z-index: 10;
+}
+
+/* ==========================================================================
+   CARROSSEL TOUCH (Swipeable Gallery)
+   ========================================================================== */
+.carousel-section {
+  width: 100%;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.carousel-viewport {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Controles do Carrossel */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(18, 3, 15, 0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 3;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: var(--transition-smooth);
+}
+
+.carousel-control:active {
+  background: rgba(183, 110, 121, 0.8);
+}
+
+.carousel-control.prev {
+  left: 12px;
+}
+
+.carousel-control.next {
+  right: 12px;
+}
+
+.carousel-control svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Indicadores de slides */
+.carousel-indicators {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 3;
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  max-width: 85%;
+  overflow-x: auto;
+}
+
+/* Esconder barra de rolagem dos indicadores */
+.carousel-indicators::-webkit-scrollbar {
+  display: none;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: var(--transition-smooth);
+  flex-shrink: 0;
+}
+
+.indicator.active {
+  background: var(--gold-primary);
+  transform: scale(1.25);
+  box-shadow: 0 0 8px var(--gold-primary);
+}
+
+/* ==========================================================================
+   FOOTER (FECHAMENTO)
+   ========================================================================== */
+.romantic-footer {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.footer-card {
+  text-align: center;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-msg {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.final-love {
+  font-family: var(--font-romantic);
+  font-size: 2.5rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 10px 0;
+}
+
+.animated-heart {
+  font-size: 3rem;
+  color: #b7094c;
+  animation: heartbeat 1.4s infinite ease;
+  filter: drop-shadow(0 0 10px rgba(183, 110, 121, 0.5));
+}
+
+.happy-vday {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   LIGHTBOX (MODAL DE ZOOM)
+   ========================================================================== */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(18, 3, 15, 0.95);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.lightbox.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-content {
+  max-width: 90%;
+  max-height: 80%;
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lightbox.active .lightbox-content {
+  transform: scale(1);
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(183, 110, 121, 0.3);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 3rem;
+  cursor: pointer;
+  z-index: 1001;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================================
+   INTERSECTION OBSERVER FADE-IN
+   ========================================================================== */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-in-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
