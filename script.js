@@ -329,8 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
     indicators.forEach((ind, index) => {
       if (index === carouselIndex) {
         ind.classList.add("active");
-        // Scroll suave automático para o indicador ativo (caso exceda a largura da tela)
-        ind.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       } else {
         ind.classList.remove("active");
       }
